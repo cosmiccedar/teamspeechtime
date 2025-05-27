@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Presentation Time Estimator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      max-width: 800px;
+    }
+    h1 {
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+    }
+    .speaker-block {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+    }
+    .speaker-title {
+      font-weight: bold;
+    }
+    button {
+      padding: 8px 12px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Presentation Time Estimator</h1>
+
+<div id="speakers-container"></div>
+
+<button onclick="addSpeaker()">+ Add Speaker</button>
+<button onclick="calculateTimes()">🎤 Estimate Speaking Times</button>
+
+<h2>Results</h2>
+<div id="results"></div>
+
+<script>
+  let speakerCount = 0;
+
+  function addSpeaker() {
+    const container = document.getElementById("speakers-container");
+    speakerCount++;
+
+    const block = document.createElement("div");
+    block.className = "speaker-block";
+    block.id = `speaker-${speakerCount}`;
+
+    block.innerHTML = `
+      <label class="speaker-title">Speaker ${speakerCount}:</label>
+      <textarea placeholder="Enter script here..."></textarea>
+      <br>
+      <button onclick="removeSpeaker(${speakerCount})">Remove</button>
+    `;
+
+    container.appendChild(block);
+  }
+
+  function removeSpeaker(id) {
+    const block = document.getElementById(`speaker-${id}`);
+    block.remove();
+  }
+
+  function calculateTimes() {
+    const blocks = document.querySelectorAll(".speaker-block");
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    let totalWords = 0;
+    let totalTime = 0;
+
+    blocks.forEach((block, index) => {
+      const text = block.querySelector("textarea").value;
+      const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+      const timeMinutes = wordCount / 130;
+      totalWords += wordCount;
+      totalTime += timeMinutes;
+
+      const mins = Math.floor(timeMinutes);
+      const secs = Math.round((timeMinutes - mins) * 60);
+
+      resultsDiv.innerHTML += `<p><strong>Speaker ${index + 1}:</strong> ${wordCount} words — <strong>${mins} min ${secs} sec</strong></p>`;
+    });
+
+    const totalMins = Math.floor(totalTime);
+    const totalSecs = Math.round((totalTime - totalMins) * 60);
+    resultsDiv.innerHTML += `<hr><p><strong>Total:</strong> ${totalWords} words — <strong>${totalMins} min ${totalSecs} sec</strong></p>`;
+  }
+
+  // Add one speaker by default
+  addSpeaker();
+</script>
+
+</body>
+</html>

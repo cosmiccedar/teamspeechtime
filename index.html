@@ -6,35 +6,85 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #ffffff;
+      color: #333;
       margin: 40px;
       max-width: 800px;
     }
-    h1 {
+    h1, h2 {
+      color: #2E7D32;
       text-align: center;
     }
     textarea {
       width: 100%;
       height: 100px;
       margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      font-size: 14px;
+      resize: vertical;
     }
     .speaker-block {
-      border: 1px solid #ccc;
+      border: 2px solid #A5D6A7;
+      background-color: #E8F5E9;
       padding: 15px;
       margin-bottom: 20px;
-      border-radius: 5px;
+      border-radius: 8px;
     }
     .speaker-title {
       font-weight: bold;
+      color: #388E3C;
     }
     button {
-      padding: 8px 12px;
+      padding: 10px 16px;
       margin-top: 10px;
+      margin-right: 10px;
+      background-color: #66BB6A;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #558B2F;
+    }
+    #results p {
+      background-color: #F1F8E9;
+      border-left: 5px solid #81C784;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 4px;
+    }
+    #wpm-control {
+      background: #f9fff9;
+      border: 1px solid #C8E6C9;
+      padding: 10px 15px;
+      margin: 20px 0;
+      border-radius: 8px;
+    }
+    label {
+      font-weight: bold;
+      color: #2E7D32;
+    }
+    input[type="number"] {
+      padding: 6px 10px;
+      margin-left: 10px;
+      width: 80px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
     }
   </style>
 </head>
 <body>
 
 <h1>Presentation Time Estimator</h1>
+
+<div id="wpm-control">
+  <label for="wpm">Words per Minute (WPM):</label>
+  <input type="number" id="wpm" value="130" min="50" max="300" />
+</div>
 
 <div id="speakers-container"></div>
 
@@ -71,6 +121,9 @@
   }
 
   function calculateTimes() {
+    const wpmInput = document.getElementById("wpm");
+    const wpm = parseInt(wpmInput.value) || 130;
+
     const blocks = document.querySelectorAll(".speaker-block");
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
@@ -81,7 +134,7 @@
     blocks.forEach((block, index) => {
       const text = block.querySelector("textarea").value;
       const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-      const timeMinutes = wordCount / 130;
+      const timeMinutes = wordCount / wpm;
       totalWords += wordCount;
       totalTime += timeMinutes;
 
